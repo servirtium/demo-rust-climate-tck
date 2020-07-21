@@ -13,4 +13,4 @@ To build the project, you have to install **Rust** first.
 
 ## License
 
-Licensed under MIT License ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+Licensed under MIT License ([LICENSE](LICENSE) or http://opensource.org/licenses/MIT)
