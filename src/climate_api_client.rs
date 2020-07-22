@@ -5,7 +5,7 @@ use crate::data::annual_gcm_data::AnnualGcmData;
 use quick_xml;
 
 /// Struct that represents a World Bank Climate Data API client.
-#[derive(Default, Debug)]
+#[derive(Default, Debug, Clone)]
 pub struct ClimateApiClient {
     http: ReqwestClient,
 }
