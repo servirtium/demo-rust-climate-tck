@@ -159,7 +159,17 @@ mod tests {
         }
     }
 
+    #[test]
+    fn test_averageRainfallForGreatBritainFrom1999to1980DoesNotExist() {
+        let climateApi = ClimateApiClient::new();
+        let result = climateApi.get_average_annual_rainfall(1999, 1980, "gbr");
 
+        match result {
+            Err(err) => match err {
+                Error::DateRangeNotSupported(1999, 1980) => (),
+                _ => panic!("The function returned a wrong error: {}", err.to_string()),
+            },
+            _ => panic!("The function call should return an error"),
         }
     }
 }
