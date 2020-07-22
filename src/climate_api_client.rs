@@ -4,22 +4,45 @@ type ReqwestClient = reqwest::blocking::Client;
 use crate::data::annual_gcm_data::AnnualGcmData;
 use quick_xml;
 
+/// Struct that represents a World Bank Climate Data API client.
 #[derive(Default, Debug)]
 pub struct ClimateApiClient {
     http: ReqwestClient,
 }
 
 impl ClimateApiClient {
+    /// Create a ClimateApiClient with the default reqwest client.
+    ///
+    /// # Returns
+    /// A ClimateApiClient.
     pub fn new() -> Self {
         ClimateApiClient {
             http: ReqwestClient::new(),
         }
     }
 
+    /// Create a `ClimateApiClient` and use the passed Reqwest client as a http client.
+    ///
+    /// # Arguments
+    /// `client` - the reqwest client to use.
+    ///
+    /// # Returns
+    ///
+    /// A ClimateApiClient.
     pub fn with_client(client: ReqwestClient) -> Self {
         ClimateApiClient { http: client }
     }
 
+    /// Gets an average annual rainfall data from WorldBank Climate Data API.
+    ///
+    /// # Arguments
+    /// `from_year` - start of the year interval. It should be a value between 1920 and 2080 inclusive and it should be
+    ///     divisible by 20.
+    /// `to_year` - end of the year interval. It should be a value equal to `from_year` + 19.
+    /// `country_iso` - ISO3 country code
+    ///
+    /// # Returns
+    /// Average of all of the average annual values from all Global Circulation Models (GCM).
     pub fn get_average_annual_rainfall<T: AsRef<str>>(
         &self,
         from_year: u16,
