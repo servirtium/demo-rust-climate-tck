@@ -9,10 +9,6 @@ pub enum Error {
     ReqwestError(reqwest::Error),
 }
 
-unsafe impl Sync for Error {}
-
-unsafe impl Send for Error {}
-
 impl std::error::Error for Error {}
 
 impl From<reqwest::Error> for Error {
