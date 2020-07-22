@@ -136,14 +136,12 @@ mod tests {
         let climateApi = ClimateApiClient::new();
         let result = climateApi.get_average_annual_rainfall(1985, 1995, "gbr");
 
-        if let Err(err) = result {
-            if let Error::DateRangeNotSupported(1985, 1995) = err {
-                ()
-            } else {
-                panic!("The function returned a wrong error: {}", err.to_string());
-            }
-        } else {
-            panic!("The function call should return an error");
+        match result {
+            Err(err) => match err {
+                Error::DateRangeNotSupported(1985, 1995) => (),
+                _ => panic!("The function returned a wrong error: {}", err.to_string()),
+            },
+            _ => panic!("The function call should return an error"),
         }
     }
 
@@ -152,14 +150,16 @@ mod tests {
         let climateApi = ClimateApiClient::new();
         let result = climateApi.get_average_annual_rainfall(1980, 1999, "mde");
 
-        if let Err(err) = result {
-            if let Error::NotRecognizedByClimateWeb = err {
-                ()
-            } else {
-                panic!("The function returned a wrong error: {}", err.to_string());
-            }
-        } else {
-            panic!("The function call should return an error");
+        match result {
+            Err(err) => match err {
+                Error::NotRecognizedByClimateWeb => (),
+                _ => panic!("The function returned a wrong error: {}", err.to_string()),
+            },
+            _ => panic!("The function call should return an error"),
+        }
+    }
+
+
         }
     }
 }
