@@ -83,14 +83,7 @@ impl ClimateApiClient {
     }
 
     fn check_years(from_year: u16, to_year: u16) -> Result<(), Error> {
-        if from_year < 1920
-            || from_year > 2080
-            || from_year % 20 != 0
-            || to_year < 1939
-            || to_year > 2099
-            || (to_year + 1) % 20 != 0
-            || from_year > to_year
-            || to_year - from_year != 19
+        if from_year < 1920 || from_year > 2080 || from_year % 20 != 0 || to_year != from_year + 19
         {
             Err(Error::DateRangeNotSupported(from_year, to_year))
         } else {
