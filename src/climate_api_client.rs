@@ -160,88 +160,22 @@ mod tests {
     };
 
     #[test]
-    fn test_averageRainfallForGreatBritainFrom1980to1999Exists() {
-        let climateApi = ClimateApiClient::new();
-        assert_eq!(
-            climateApi
-                .get_average_annual_rainfall(1980, 1999, "gbr")
-                .unwrap(),
-            988.8454972331015
-        );
-    }
-
-    #[test]
-    fn test_averageRainfallForFranceFrom1980to1999Exists() {
-        let climateApi = ClimateApiClient::new();
-        assert_eq!(
-            climateApi
-                .get_average_annual_rainfall(1980, 1999, "fra")
-                .unwrap(),
-            913.7986955122727
-        );
-    }
-
-    #[test]
-    fn test_averageRainfallForEgyptFrom1980to1999Exists() {
-        let climateApi = ClimateApiClient::new();
-        assert_eq!(
-            climateApi
-                .get_average_annual_rainfall(1980, 1999, "egy")
-                .unwrap(),
-            54.58587712129825
-        );
-    }
-
-    #[test]
-    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist() {
-        let climateApi = ClimateApiClient::new();
-        let result = climateApi.get_average_annual_rainfall(1985, 1995, "gbr");
-
-        match result {
-            Err(err) => match err {
-                Error::DateRangeNotSupported(1985, 1995) => (),
-                _ => panic!("The function returned a wrong error: {}", err.to_string()),
-            },
-            _ => panic!("The function call should return an error"),
-        }
-    }
-
-    #[test]
-    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist() {
-        let climateApi = ClimateApiClient::new();
-        let result = climateApi.get_average_annual_rainfall(1980, 1999, "mde");
-
-        match result {
-            Err(err) => match err {
-                Error::NotRecognizedByClimateWeb => (),
-                _ => panic!("The function returned a wrong error: {}", err.to_string()),
-            },
-            _ => panic!("The function call should return an error"),
-        }
-    }
-
-    #[test]
-    fn test_averageRainfallForGreatBritainFrom1999to1980DoesNotExist() {
-        let climateApi = ClimateApiClient::new();
-        let result = climateApi.get_average_annual_rainfall(1999, 1980, "gbr");
-
-        match result {
-            Err(err) => match err {
-                Error::DateRangeNotSupported(1999, 1980) => (),
-                _ => panic!("The function returned a wrong error: {}", err.to_string()),
-            },
-            _ => panic!("The function call should return an error"),
-        }
+    fn test_averageRainfallForGreatBritainFrom1980to1999Exists_direct() {
+        test_averageRainfallForGreatBritainFrom1980to1999Exists(ClimateApiClient::new());
     }
 
     #[test]
     fn test_averageRainfallForGreatBritainFrom1980to1999Exists_playback() {
         setup_playback_server();
 
-        let climateApi = ClimateApiClientBuilder::new()
-            .with_domain_name("http://localhost:61417")
-            .build();
+        test_averageRainfallForGreatBritainFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
 
+    fn test_averageRainfallForGreatBritainFrom1980to1999Exists(climateApi: ClimateApiClient) {
         assert_eq!(
             climateApi
                 .get_average_annual_rainfall(1980, 1999, "gbr")
@@ -251,13 +185,22 @@ mod tests {
     }
 
     #[test]
+    fn test_averageRainfallForFranceFrom1980to1999Exists_direct() {
+        test_averageRainfallForFranceFrom1980to1999Exists(ClimateApiClient::new());
+    }
+
+    #[test]
     fn test_averageRainfallForFranceFrom1980to1999Exists_playback() {
         setup_playback_server();
 
-        let climateApi = ClimateApiClientBuilder::new()
-            .with_domain_name("http://localhost:61417")
-            .build();
+        test_averageRainfallForFranceFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
 
+    fn test_averageRainfallForFranceFrom1980to1999Exists(climateApi: ClimateApiClient) {
         assert_eq!(
             climateApi
                 .get_average_annual_rainfall(1980, 1999, "fra")
@@ -267,13 +210,22 @@ mod tests {
     }
 
     #[test]
+    fn test_averageRainfallForEgyptFrom1980to1999Exists_direct() {
+        test_averageRainfallForEgyptFrom1980to1999Exists(ClimateApiClient::new());
+    }
+
+    #[test]
     fn test_averageRainfallForEgyptFrom1980to1999Exists_playback() {
         setup_playback_server();
 
-        let climateApi = ClimateApiClientBuilder::new()
-            .with_domain_name("http://localhost:61417")
-            .build();
+        test_averageRainfallForEgyptFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
 
+    fn test_averageRainfallForEgyptFrom1980to1999Exists(climateApi: ClimateApiClient) {
         assert_eq!(
             climateApi
                 .get_average_annual_rainfall(1980, 1999, "egy")
@@ -283,13 +235,22 @@ mod tests {
     }
 
     #[test]
+    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_direct() {
+        test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(ClimateApiClient::new());
+    }
+
+    #[test]
     fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_playback() {
         setup_playback_server();
 
-        let climateApi = ClimateApiClientBuilder::new()
-            .with_domain_name("http://localhost:61417")
-            .build();
+        test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
 
+    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(climateApi: ClimateApiClient) {
         let result = climateApi.get_average_annual_rainfall(1985, 1995, "gbr");
 
         match result {
@@ -302,13 +263,22 @@ mod tests {
     }
 
     #[test]
+    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_direct() {
+        test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(ClimateApiClient::new());
+    }
+
+    #[test]
     fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_playback() {
         setup_playback_server();
 
-        let climateApi = ClimateApiClientBuilder::new()
-            .with_domain_name("http://localhost:61417")
-            .build();
+        test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
 
+    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(climateApi: ClimateApiClient) {
         let result = climateApi.get_average_annual_rainfall(1980, 1999, "mde");
 
         match result {
@@ -321,13 +291,22 @@ mod tests {
     }
 
     #[test]
+    fn test_averageRainfallForGreatBritainFrom1999to1980DoesNotExist_direct() {
+        test_averageRainfallForGreatBritainFrom1999to1980DoesNotExist(ClimateApiClient::new());
+    }
+
+    #[test]
     fn test_averageRainfallForGreatBritainFrom1999to1980DoesNotExist_playback() {
         setup_playback_server();
 
-        let climateApi = ClimateApiClientBuilder::new()
-            .with_domain_name("http://localhost:61417")
-            .build();
+        test_averageRainfallForGreatBritainFrom1999to1980DoesNotExist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
 
+    fn test_averageRainfallForGreatBritainFrom1999to1980DoesNotExist(climateApi: ClimateApiClient) {
         let result = climateApi.get_average_annual_rainfall(1999, 1980, "gbr");
 
         match result {
