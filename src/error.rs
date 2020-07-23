@@ -1,5 +1,5 @@
 use std;
-use std::fmt::Display;
+use std::{fmt::Display, io};
 
 #[derive(Debug)]
 pub enum Error {
@@ -7,6 +7,7 @@ pub enum Error {
     NotRecognizedByClimateWeb,
     DeserializationError(quick_xml::DeError),
     ReqwestError(reqwest::Error),
+    IoError(io::Error),
 }
 
 impl std::error::Error for Error {}
@@ -23,6 +24,12 @@ impl From<quick_xml::DeError> for Error {
     }
 }
 
+impl From<io::Error> for Error {
+    fn from(e: io::Error) -> Self {
+        Error::IoError(e)
+    }
+}
+
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -32,6 +39,7 @@ impl Display for Error {
             Error::NotRecognizedByClimateWeb => write!(f, "Not recognized by ClimateWeb"),
             Error::ReqwestError(e) => write!(f, "{}", e.to_string()),
             Error::DeserializationError(e) => write!(f, "{}", e.to_string()),
+            Error::IoError(e) => write!(f, "{}", e.to_string()),
         }
     }
 }
