@@ -92,12 +92,8 @@ impl ServirtiumServer {
             &servirtium_instance.domain_name,
         ) {
             (Some(m), Some(record_path), Some(_)) => match m {
-                ServirtiumMode::Playback => {
-                    println!("{}", record_path.to_string_lossy());
-                    servirtium_instance.handle_playback()
-                }
+                ServirtiumMode::Playback => servirtium_instance.handle_playback(),
                 ServirtiumMode::Record => {
-                    println!("{}", record_path.to_string_lossy());
                     servirtium_instance
                         .handle_record(&mut request, record_path)
                         .await
@@ -109,7 +105,7 @@ impl ServirtiumServer {
         match result {
             Ok(response) => Ok(response),
             Err(error) => {
-                eprintln!("An error occured: {}", error.to_string());
+                eprintln!("An error occured: {}", error);
                 let bytes = Bytes::from(error.to_string());
                 Ok(Response::builder().status(500).body(bytes.into()).unwrap())
             }
