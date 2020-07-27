@@ -1,224 +1,244 @@
-use io::{BufRead, BufReader, Write};
+use crate::{markdown_manager::MarkdownManager, servirtium_error::ServirtiumError};
+use body::Bytes;
+use hyper::{
+    body,
+    header::{HeaderName, HeaderValue},
+    service::{make_service_fn, service_fn},
+    Body, HeaderMap, Request, Response, Server,
+};
 use lazy_static::lazy_static;
-use regex::Regex;
 use std::{
-    fmt::Display,
-    fs, io,
-    net::{TcpListener, TcpStream},
+    collections::HashMap,
+    convert::Infallible,
+    net::SocketAddr,
     path::{Path, PathBuf},
     sync::{self, Mutex, MutexGuard},
     thread,
 };
 use sync::Once;
+use tokio::runtime::Runtime;
+
+static INITIALIZE_SERVIRTIUM: Once = Once::new();
 
 lazy_static! {
-    static ref HEADER_REGEX: Regex =
-        Regex::new(r"(?m)(?P<header_key>[a-zA-Z\-]+): (?P<header_value>.*?)$").unwrap();
-
-    static ref MARKDOWN_REGEX: Regex = Regex::new(
-            "(?ms)\\#\\# [^/]*(?P<uri>.*\\.xml).*?\\#\\#\\# Response headers recorded for playback.*?```\
-            \\s*(?P<headers_part>.*?)\\s*```.*?\\#\\#\\# Response body recorded for playback.*?```\\s*\
-            (?P<body_part>.*?)\\s*```.*?")
-        .unwrap();
-
     static ref TEST_LOCK: Mutex<()> = Mutex::new(());
+    static ref SERVIRTIUM_INSTANCE: Mutex<ServirtiumServer> = Mutex::new(ServirtiumServer::new());
 }
 
+pub fn prepare_for_test<P: AsRef<Path>, S: Into<String>>(
+    mode: ServirtiumMode,
+    script_path: P,
+    domain_name: S,
+) -> Result<MutexGuard<'static, ()>, ServirtiumError> {
+    ServirtiumServer::start();
+
+    let test_lock = TEST_LOCK.lock()?;
+
+    let mut server_lock = SERVIRTIUM_INSTANCE.lock()?;
+    server_lock.domain_name = Some(domain_name.into());
+    server_lock.interaction_mode = Some(mode);
+    server_lock.record_path = Some(PathBuf::from(script_path.as_ref()));
+
+    Ok(test_lock)
+}
+
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum ServirtiumMode {
     Playback,
     Record,
 }
 
-static SERVIRTIUM_INIT: Once = Once::new();
-
-lazy_static! {
-    static ref SERVIRTIUM_INSTANCE: Mutex<ServirtiumServer> = Mutex::new(ServirtiumServer::new());
-}
-
-pub struct ServirtiumServer {
-    interaction_mode: ServirtiumInteractionMode,
-    domain_name: Option<String>,
-}
-
 #[derive(Debug, Clone)]
-enum ServirtiumInteractionMode {
-    Playback(PlaybackData),
-    Recording(PathBuf),
-    NotSet,
+pub struct ServirtiumServer {
+    interaction_mode: Option<ServirtiumMode>,
+    record_path: Option<PathBuf>,
+    domain_name: Option<String>,
 }
 
 impl ServirtiumServer {
     fn new() -> Self {
         ServirtiumServer {
-            interaction_mode: ServirtiumInteractionMode::NotSet,
+            interaction_mode: None,
             domain_name: None,
+            record_path: None,
         }
     }
 
-    pub fn prepare_for_test<P: AsRef<Path>, S: Into<String>>(
-        mode: ServirtiumMode,
-        script_path: P,
-        domain_name: S,
-    ) -> Result<MutexGuard<'static, ()>, ServirtiumServerError> {
-        Self::start();
-
-        let test_lock = TEST_LOCK.lock()?;
-
-        let mut server_lock = SERVIRTIUM_INSTANCE.lock()?;
-        server_lock.domain_name = Some(domain_name.into());
-        server_lock.interaction_mode = match mode {
-            ServirtiumMode::Playback => {
-                let playback_data = Self::load_playback_file(script_path)?;
-                ServirtiumInteractionMode::Playback(playback_data)
-            }
-            ServirtiumMode::Record => {
-                ServirtiumInteractionMode::Recording(PathBuf::from(script_path.as_ref()))
-            }
-        };
-
-        Ok(test_lock)
-    }
-
     fn start() {
-        SERVIRTIUM_INIT.call_once(|| {
+        INITIALIZE_SERVIRTIUM.call_once(|| {
             thread::spawn(|| {
-                let listener = TcpListener::bind("localhost:61417").unwrap();
+                Runtime::new().unwrap().block_on(async {
+                    let addr = SocketAddr::from(([127, 0, 0, 1], 61417));
 
-                for stream in listener.incoming() {
-                    if let Ok(mut stream) = stream {
-                        let servirtium_instance = SERVIRTIUM_INSTANCE.lock().unwrap();
-                        match &servirtium_instance.interaction_mode {
-                            ServirtiumInteractionMode::Playback(playback_data) => {
-                                Self::handle_playback(&mut stream, &playback_data);
-                            }
-                            ServirtiumInteractionMode::Recording(path) => {
-                                Self::handle_record(&mut stream, path);
-                            }
-                            ServirtiumInteractionMode::NotSet => {}
-                        };
+                    let server = Server::bind(&addr).serve(make_service_fn(|_| async {
+                        // service_fn converts our function into a `Service`
+                        Ok::<_, Infallible>(service_fn(Self::handle_request))
+                    }));
+
+                    // Run this server for... forever!
+                    if let Err(e) = server.await {
+                        eprintln!("Servirtium Server error: {}", e);
                     }
-                }
+                });
             });
         });
     }
 
-    fn handle_playback(stream: &mut TcpStream, playback_data: &PlaybackData) {
-        // it's necessary because the client first needs to send all the data it needs to send
-        let _ = Self::read_first_line(stream);
-
-        let response = if playback_data.headers.is_empty() {
-            format!("HTTP/1.1 200 OK\r\n\r\n{}", playback_data.response_body)
-        } else {
-            let headers = playback_data
-                .headers
-                .iter()
-                // Transfer-Encoding: chunked shouldn't be included in local tests because all the data is
-                // written immediately and reqwest panics because of that
-                .filter(|(key, value)| key != "Transfer-Encoding" || value != "chunked")
-                .map(|(key, value)| format!("{}: {}\r\n", key, value))
-                .collect::<Vec<_>>()
-                .join("");
-
-            format!(
-                "HTTP/1.1 200 OK\r\n{}\r\n{}",
-                headers, playback_data.response_body
-            )
+    async fn handle_request(mut request: Request<Body>) -> Result<Response<Body>, Infallible> {
+        let servirtium_instance = SERVIRTIUM_INSTANCE.lock().unwrap().clone();
+        let result = match (
+            &servirtium_instance.interaction_mode,
+            &servirtium_instance.record_path,
+            &servirtium_instance.domain_name,
+        ) {
+            (Some(m), Some(record_path), Some(_)) => match m {
+                ServirtiumMode::Playback => {
+                    println!("{}", record_path.to_string_lossy());
+                    servirtium_instance.handle_playback()
+                }
+                ServirtiumMode::Record => {
+                    println!("{}", record_path.to_string_lossy());
+                    servirtium_instance
+                        .handle_record(&mut request, record_path)
+                        .await
+                }
+            },
+            _ => Err(ServirtiumError::NotConfigured),
         };
 
-        stream
-            .write(response.as_bytes())
-            .expect("Couldn't write the response");
-        stream.flush().expect("Couldn't flush the stream buffer");
+        match result {
+            Ok(response) => Ok(response),
+            Err(error) => {
+                eprintln!("An error occured: {}", error.to_string());
+                let bytes = Bytes::from(error.to_string());
+                Ok(Response::builder().status(500).body(bytes.into()).unwrap())
+            }
+        }
     }
 
-    fn handle_record<P: AsRef<Path>>(_stream: &mut TcpStream, _record_path: P) {
-        todo!()
+    fn handle_playback(&self) -> Result<Response<Body>, ServirtiumError> {
+        let playback_data = MarkdownManager::load_playback_file(
+            self.record_path
+                .as_ref()
+                .ok_or(ServirtiumError::NotConfigured)?,
+        )?;
+        let mut response_builder = Response::builder();
+
+        if let Some(headers_mut) = response_builder.headers_mut() {
+            Self::put_headers(headers_mut, self.filter_headers(&playback_data.headers))?;
+        }
+
+        Ok(response_builder.body(playback_data.response_body.into())?)
     }
 
-    fn load_playback_file<P: AsRef<Path>>(
-        filename: P,
-    ) -> Result<PlaybackData, ServirtiumServerError> {
-        let file_contents = fs::read_to_string(filename)?;
+    async fn handle_record<P: AsRef<Path>>(
+        &self,
+        mut request: &mut Request<Body>,
+        record_path: P,
+    ) -> Result<Response<Body>, ServirtiumError> {
+        let request_data = Self::read_request_data(&mut request).await?;
+        let response_data = self.forward_request(&request_data).await?;
 
-        let markdown_captures = MARKDOWN_REGEX
-            .captures(&file_contents)
-            .ok_or(ServirtiumServerError::InvalidMarkdownFormat)?;
+        MarkdownManager::save_markdown(record_path, &request_data, &response_data)?;
 
-        let uri = &markdown_captures["uri"];
-        let headers_part = &markdown_captures["headers_part"];
-        let body_part = &markdown_captures["body_part"];
+        let mut response_builder = Response::builder().status(response_data.status_code);
 
-        let headers = Self::parse_headers(headers_part);
+        if let Some(header_map) = response_builder.headers_mut() {
+            Self::put_headers(header_map, &response_data.headers)?;
+        }
 
-        Ok(PlaybackData {
+        Ok(response_builder.body(response_data.body.into())?)
+    }
+
+    async fn forward_request(
+        &self,
+        request_data: &RequestData,
+    ) -> Result<ResponseData, ServirtiumError> {
+        let url = format!(
+            "{}{}",
+            self.domain_name
+                .as_ref()
+                .ok_or(ServirtiumError::NotConfigured)?,
+            request_data.uri
+        );
+
+        let response = reqwest::get(&url).await?;
+        let status_code = response.status().as_u16();
+        let headers = Self::extract_headers(response.headers());
+
+        let body = response.bytes().await?;
+
+        Ok(ResponseData {
+            status_code,
+            body,
             headers,
-            response_body: String::from(body_part),
-            uri: String::from(uri),
         })
     }
 
-    fn parse_headers<T: AsRef<str>>(headers_part: T) -> Vec<(String, String)> {
-        let mut headers = Vec::new();
+    async fn read_request_data(
+        request: &mut Request<Body>,
+    ) -> Result<RequestData, ServirtiumError> {
+        let method = request.method().to_string();
+        let uri = request.uri().to_string();
+        let headers = Self::extract_headers(request.headers());
 
-        for capture in HEADER_REGEX.captures_iter(headers_part.as_ref()) {
-            headers.push((
-                String::from(capture["header_key"].trim()),
-                String::from(capture["header_value"].trim()),
-            ));
+        let body = body::to_bytes(request.body_mut())
+            .await
+            .map_err(|_| ServirtiumError::InvalidBody)?;
+
+        Ok(RequestData {
+            method,
+            uri,
+            headers,
+            body,
+        })
+    }
+
+    fn put_headers<'a, I: IntoIterator<Item = (&'a String, &'a String)>>(
+        header_map: &mut HeaderMap<HeaderValue>,
+        headers: I,
+    ) -> Result<(), ServirtiumError> {
+        for (key, value) in headers {
+            let header_name = HeaderName::from_lowercase(key.to_lowercase().as_bytes())?;
+            let header_value = HeaderValue::from_str(value)?;
+            header_map.append(header_name, header_value);
         }
 
+        Ok(())
+    }
+
+    fn extract_headers(header_map: &HeaderMap) -> HashMap<String, String> {
+        // it currently ignores header values with opaque characters
+        header_map
+            .iter()
+            .map(|(k, v)| (String::from(k.as_str()), v.to_str()))
+            .filter_map(|(key, value)| value.ok().map(|v| (key, String::from(v))))
+            .collect::<HashMap<_, _>>()
+    }
+
+    fn filter_headers<'a>(
+        &self,
+        headers: &'a HashMap<String, String>,
+    ) -> impl Iterator<Item = (&'a String, &'a String)> + 'a {
         headers
-    }
-
-    fn read_first_line(stream: &mut TcpStream) -> Result<String, io::Error> {
-        let mut tmp_str = String::new();
-        let mut reader = BufReader::new(&*stream);
-        reader.read_line(&mut tmp_str).map(|_| tmp_str)
-    }
-}
-
-impl Default for ServirtiumServer {
-    fn default() -> Self {
-        Self::new()
+            .iter()
+            // Transfer-Encoding: chunked shouldn't be included in local tests because all the data is
+            // written immediately and reqwest panics because of that
+            .filter(|(key, value)| *key != "Transfer-Encoding" || *value != "chunked")
     }
 }
 
 #[derive(Debug)]
-pub enum ServirtiumServerError {
-    InvalidMarkdownFormat,
-    IoError(io::Error),
-    PoisonedLock,
-}
-
-impl std::error::Error for ServirtiumServerError {}
-
-impl Display for ServirtiumServerError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ServirtiumServerError::InvalidMarkdownFormat => {
-                write!(f, "The markdown format was poisoned")
-            }
-            ServirtiumServerError::IoError(e) => write!(f, "IoError: {}", e.to_string()),
-            ServirtiumServerError::PoisonedLock => write!(f, "The lock was poisoned"),
-        }
-    }
-}
-
-impl From<io::Error> for ServirtiumServerError {
-    fn from(e: io::Error) -> Self {
-        ServirtiumServerError::IoError(e)
-    }
-}
-
-impl<T> From<sync::PoisonError<T>> for ServirtiumServerError {
-    fn from(_: sync::PoisonError<T>) -> Self {
-        ServirtiumServerError::PoisonedLock
-    }
-}
-
-#[derive(Debug, Clone)]
-struct PlaybackData {
+pub struct RequestData {
     pub uri: String,
-    pub headers: Vec<(String, String)>,
-    pub response_body: String,
+    pub headers: HashMap<String, String>,
+    pub method: String,
+    pub body: Bytes,
+}
+
+#[derive(Debug)]
+pub struct ResponseData {
+    pub headers: HashMap<String, String>,
+    pub body: Bytes,
+    pub status_code: u16,
 }

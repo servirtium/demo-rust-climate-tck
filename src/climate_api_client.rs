@@ -2,9 +2,8 @@ use crate::error::Error;
 use reqwest::{self};
 type ReqwestClient = reqwest::blocking::Client;
 use crate::data::annual_gcm_data::AnnualGcmData;
-use quick_xml;
 
-const DEFAULT_DOMAIN_NAME: &'static str = "http://climatedataapi.worldbank.org/";
+const DEFAULT_DOMAIN_NAME: &str = "http://climatedataapi.worldbank.org";
 
 /// Builder used to build a ClimateApiClient instance
 #[derive(Debug, Clone, Default)]
@@ -53,11 +52,11 @@ impl ClimateApiClientBuilder {
     /// A ClimateApiClient instance.
     pub fn build(mut self) -> ClimateApiClient {
         ClimateApiClient {
-            http: self.http_client.take().unwrap_or(ReqwestClient::new()),
+            http: self.http_client.take().unwrap_or_default(),
             domain_name: self
                 .domain_name
                 .take()
-                .unwrap_or(String::from(DEFAULT_DOMAIN_NAME)),
+                .unwrap_or_else(|| String::from(DEFAULT_DOMAIN_NAME)),
         }
     }
 }
@@ -108,7 +107,7 @@ impl ClimateApiClient {
         }
 
         let data: AnnualGcmData = quick_xml::de::from_str(&response_text)?;
-        let data = data.results.unwrap_or(Vec::new());
+        let data = data.results.unwrap_or_default();
 
         let (sum, count) = data.into_iter().fold((0.0, 0), |(sum, count), datum| {
             (sum + datum.annual_data.double, count + 1)
@@ -151,10 +150,11 @@ mod tests {
     use super::DEFAULT_DOMAIN_NAME;
     use crate::{
         error::Error,
-        servirtium_server::{ServirtiumMode, ServirtiumServer},
+        servirtium_server::{prepare_for_test, ServirtiumMode},
         ClimateApiClient, ClimateApiClientBuilder,
     };
-    use std::path::Path;
+    use panic::UnwindSafe;
+    use std::{panic, path::Path};
 
     #[test]
     fn test_averageRainfallForGreatBritainFrom1980to1999Exists_direct() {
@@ -164,6 +164,20 @@ mod tests {
     #[test]
     fn test_averageRainfallForGreatBritainFrom1980to1999Exists_playback() {
         run_with_servirtium_playback(
+            "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
+            || {
+                test_averageRainfallForGreatBritainFrom1980to1999Exists(
+                    ClimateApiClientBuilder::new()
+                        .with_domain_name("http://localhost:61417")
+                        .build(),
+                );
+            },
+        );
+    }
+
+    #[test]
+    fn test_averageRainfallForGreatBritainFrom1980to1999Exists_record() {
+        run_with_servirtium_record(
             "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
             || {
                 test_averageRainfallForGreatBritainFrom1980to1999Exists(
@@ -203,6 +217,20 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_averageRainfallForFranceFrom1980to1999Exists_record() {
+        run_with_servirtium_record(
+            "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
+            || {
+                test_averageRainfallForFranceFrom1980to1999Exists(
+                    ClimateApiClientBuilder::new()
+                        .with_domain_name("http://localhost:61417")
+                        .build(),
+                );
+            },
+        );
+    }
+
     fn test_averageRainfallForFranceFrom1980to1999Exists(climateApi: ClimateApiClient) {
         assert_eq!(
             climateApi
@@ -231,6 +259,20 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_averageRainfallForEgyptFrom1980to1999Exists_record() {
+        run_with_servirtium_record(
+            "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
+            || {
+                test_averageRainfallForEgyptFrom1980to1999Exists(
+                    ClimateApiClientBuilder::new()
+                        .with_domain_name("http://localhost:61417")
+                        .build(),
+                );
+            },
+        );
+    }
+
     fn test_averageRainfallForEgyptFrom1980to1999Exists(climateApi: ClimateApiClient) {
         assert_eq!(
             climateApi
@@ -248,6 +290,20 @@ mod tests {
     #[test]
     fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_playback() {
         run_with_servirtium_playback(
+            "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
+            || {
+                test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
+                    ClimateApiClientBuilder::new()
+                        .with_domain_name("http://localhost:61417")
+                        .build(),
+                );
+            },
+        );
+    }
+
+    #[test]
+    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_record() {
+        run_with_servirtium_record(
             "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
             || {
                 test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
@@ -290,6 +346,20 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_record() {
+        run_with_servirtium_record(
+            "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
+            || {
+                test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
+                    ClimateApiClientBuilder::new()
+                        .with_domain_name("http://localhost:61417")
+                        .build(),
+                );
+            },
+        );
+    }
+
     fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(climateApi: ClimateApiClient) {
         let result = climateApi.get_average_annual_rainfall(1980, 1999, "mde");
 
@@ -302,14 +372,32 @@ mod tests {
         }
     }
 
-    fn run_with_servirtium_playback<P: AsRef<Path>, F: FnOnce() -> ()>(markdown_path: P, check: F) {
-        let _server_lock = ServirtiumServer::prepare_for_test(
-            ServirtiumMode::Playback,
-            markdown_path,
-            DEFAULT_DOMAIN_NAME,
-        )
-        .unwrap();
+    fn run_with_servirtium_record<P: AsRef<Path>, F: FnOnce() + UnwindSafe>(
+        markdown_path: P,
+        check: F,
+    ) {
+        run_with_servirtium(markdown_path, ServirtiumMode::Record, check);
+    }
 
-        check();
+    fn run_with_servirtium_playback<P: AsRef<Path>, F: FnOnce() + UnwindSafe>(
+        markdown_path: P,
+        check: F,
+    ) {
+        run_with_servirtium(markdown_path, ServirtiumMode::Playback, check);
+    }
+
+    fn run_with_servirtium<P: AsRef<Path>, F: FnOnce() + UnwindSafe>(
+        markdown_path: P,
+        mode: ServirtiumMode,
+        check: F,
+    ) {
+        let _server_lock = prepare_for_test(mode, markdown_path, DEFAULT_DOMAIN_NAME).unwrap();
+
+        if let Err(e) = panic::catch_unwind(|| {
+            check();
+        }) {
+            drop(_server_lock);
+            panic::resume_unwind(e);
+        }
     }
 }
