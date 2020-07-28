@@ -147,45 +147,39 @@ impl ClimateApiClient {
 #[cfg(test)]
 #[allow(non_snake_case)]
 mod tests {
-    use super::DEFAULT_DOMAIN_NAME;
-    use crate::{
-        error::Error,
-        servirtium_server::{prepare_for_test, ServirtiumMode},
-        ClimateApiClient, ClimateApiClientBuilder,
-    };
-    use panic::UnwindSafe;
-    use std::{panic, path::Path};
+    use crate::{error::Error, ClimateApiClient, ClimateApiClientBuilder};
+    use servirtium::{servirtium_playback_test, servirtium_record_test, ServirtiumConfiguration};
+
+    fn servirtium_configure(config: &mut ServirtiumConfiguration) {
+        config.set_domain_name("http://climatedataapi.worldbank.org");
+    }
 
     #[test]
     fn test_averageRainfallForGreatBritainFrom1980to1999Exists_direct() {
         test_averageRainfallForGreatBritainFrom1980to1999Exists(ClimateApiClient::new());
     }
 
-    #[test]
+    #[servirtium_playback_test(
+        "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForGreatBritainFrom1980to1999Exists_playback() {
-        run_with_servirtium_playback(
-            "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
-            || {
-                test_averageRainfallForGreatBritainFrom1980to1999Exists(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForGreatBritainFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
-    #[test]
+    #[servirtium_record_test(
+        "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForGreatBritainFrom1980to1999Exists_record() {
-        run_with_servirtium_record(
-            "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
-            || {
-                test_averageRainfallForGreatBritainFrom1980to1999Exists(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForGreatBritainFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
@@ -203,31 +197,27 @@ mod tests {
         test_averageRainfallForFranceFrom1980to1999Exists(ClimateApiClient::new());
     }
 
-    #[test]
+    #[servirtium_playback_test(
+        "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForFranceFrom1980to1999Exists_playback() {
-        run_with_servirtium_playback(
-            "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
-            || {
-                test_averageRainfallForFranceFrom1980to1999Exists(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForFranceFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
-    #[test]
+    #[servirtium_record_test(
+        "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForFranceFrom1980to1999Exists_record() {
-        run_with_servirtium_record(
-            "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
-            || {
-                test_averageRainfallForFranceFrom1980to1999Exists(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForFranceFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
@@ -245,31 +235,27 @@ mod tests {
         test_averageRainfallForEgyptFrom1980to1999Exists(ClimateApiClient::new());
     }
 
-    #[test]
+    #[servirtium_playback_test(
+        "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForEgyptFrom1980to1999Exists_playback() {
-        run_with_servirtium_playback(
-            "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
-            || {
-                test_averageRainfallForEgyptFrom1980to1999Exists(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForEgyptFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
-    #[test]
+    #[servirtium_record_test(
+        "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForEgyptFrom1980to1999Exists_record() {
-        run_with_servirtium_record(
-            "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
-            || {
-                test_averageRainfallForEgyptFrom1980to1999Exists(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForEgyptFrom1980to1999Exists(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
@@ -287,31 +273,27 @@ mod tests {
         test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(ClimateApiClient::new());
     }
 
-    #[test]
+    #[servirtium_playback_test(
+        "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_playback() {
-        run_with_servirtium_playback(
-            "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
-            || {
-                test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
-    #[test]
+    #[servirtium_record_test(
+        "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_record() {
-        run_with_servirtium_record(
-            "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
-            || {
-                test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
@@ -332,31 +314,27 @@ mod tests {
         test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(ClimateApiClient::new());
     }
 
-    #[test]
+    #[servirtium_playback_test(
+        "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_playback() {
-        run_with_servirtium_playback(
-            "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
-            || {
-                test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
-    #[test]
+    #[servirtium_record_test(
+        "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
+        servirtium_configure
+    )]
     fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_record() {
-        run_with_servirtium_record(
-            "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
-            || {
-                test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
-                    ClimateApiClientBuilder::new()
-                        .with_domain_name("http://localhost:61417")
-                        .build(),
-                );
-            },
+        test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
         );
     }
 
@@ -369,35 +347,6 @@ mod tests {
                 _ => panic!("The function returned a wrong error: {}", err.to_string()),
             },
             _ => panic!("The function call should return an error"),
-        }
-    }
-
-    fn run_with_servirtium_record<P: AsRef<Path>, F: FnOnce() + UnwindSafe>(
-        markdown_path: P,
-        check: F,
-    ) {
-        run_with_servirtium(markdown_path, ServirtiumMode::Record, check);
-    }
-
-    fn run_with_servirtium_playback<P: AsRef<Path>, F: FnOnce() + UnwindSafe>(
-        markdown_path: P,
-        check: F,
-    ) {
-        run_with_servirtium(markdown_path, ServirtiumMode::Playback, check);
-    }
-
-    fn run_with_servirtium<P: AsRef<Path>, F: FnOnce() + UnwindSafe>(
-        markdown_path: P,
-        mode: ServirtiumMode,
-        check: F,
-    ) {
-        let _server_lock = prepare_for_test(mode, markdown_path, DEFAULT_DOMAIN_NAME).unwrap();
-
-        if let Err(e) = panic::catch_unwind(|| {
-            check();
-        }) {
-            drop(_server_lock);
-            panic::resume_unwind(e);
         }
     }
 }
