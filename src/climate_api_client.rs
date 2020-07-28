@@ -145,7 +145,6 @@ impl ClimateApiClient {
 }
 
 #[cfg(test)]
-#[allow(non_snake_case)]
 mod tests {
     use crate::{error::Error, ClimateApiClient, ClimateApiClientBuilder};
     use servirtium::{servirtium_playback_test, servirtium_record_test, ServirtiumConfiguration};
@@ -155,16 +154,16 @@ mod tests {
     }
 
     #[test]
-    fn test_averageRainfallForGreatBritainFrom1980to1999Exists_direct() {
-        test_averageRainfallForGreatBritainFrom1980to1999Exists(ClimateApiClient::new());
+    fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists_direct() {
+        test_average_rainfall_for_great_britain_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForGreatBritainFrom1980to1999Exists_playback() {
-        test_averageRainfallForGreatBritainFrom1980to1999Exists(
+    fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists_playback() {
+        test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
@@ -175,17 +174,19 @@ mod tests {
         "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForGreatBritainFrom1980to1999Exists_record() {
-        test_averageRainfallForGreatBritainFrom1980to1999Exists(
+    fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists_record() {
+        test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
         );
     }
 
-    fn test_averageRainfallForGreatBritainFrom1980to1999Exists(climateApi: ClimateApiClient) {
+    fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
+        climate_api: ClimateApiClient,
+    ) {
         assert_eq!(
-            climateApi
+            climate_api
                 .get_average_annual_rainfall(1980, 1999, "gbr")
                 .unwrap(),
             988.8454972331015
@@ -193,16 +194,16 @@ mod tests {
     }
 
     #[test]
-    fn test_averageRainfallForFranceFrom1980to1999Exists_direct() {
-        test_averageRainfallForFranceFrom1980to1999Exists(ClimateApiClient::new());
+    fn test_average_rainfall_for_france_from_1980_to_1999_exists_direct() {
+        test_average_rainfall_for_france_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForFranceFrom1980to1999Exists_playback() {
-        test_averageRainfallForFranceFrom1980to1999Exists(
+    fn test_average_rainfall_for_france_from_1980_to_1999_exists_playback() {
+        test_average_rainfall_for_france_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
@@ -213,17 +214,17 @@ mod tests {
         "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForFranceFrom1980to1999Exists_record() {
-        test_averageRainfallForFranceFrom1980to1999Exists(
+    fn test_average_rainfall_for_france_from_1980_to_1999_exists_record() {
+        test_average_rainfall_for_france_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
         );
     }
 
-    fn test_averageRainfallForFranceFrom1980to1999Exists(climateApi: ClimateApiClient) {
+    fn test_average_rainfall_for_france_from_1980_to_1999_exists(climate_api: ClimateApiClient) {
         assert_eq!(
-            climateApi
+            climate_api
                 .get_average_annual_rainfall(1980, 1999, "fra")
                 .unwrap(),
             913.7986955122727
@@ -231,16 +232,16 @@ mod tests {
     }
 
     #[test]
-    fn test_averageRainfallForEgyptFrom1980to1999Exists_direct() {
-        test_averageRainfallForEgyptFrom1980to1999Exists(ClimateApiClient::new());
+    fn test_average_rainfall_for_egypt_from_1980_to_1999_exists_direct() {
+        test_average_rainfall_for_egypt_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForEgyptFrom1980to1999Exists_playback() {
-        test_averageRainfallForEgyptFrom1980to1999Exists(
+    fn test_average_rainfall_for_egypt_from_1980_to_1999_exists_playback() {
+        test_average_rainfall_for_egypt_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
@@ -251,17 +252,17 @@ mod tests {
         "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForEgyptFrom1980to1999Exists_record() {
-        test_averageRainfallForEgyptFrom1980to1999Exists(
+    fn test_average_rainfall_for_egypt_from_1980_to_1999_exists_record() {
+        test_average_rainfall_for_egypt_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
         );
     }
 
-    fn test_averageRainfallForEgyptFrom1980to1999Exists(climateApi: ClimateApiClient) {
+    fn test_average_rainfall_for_egypt_from_1980_to_1999_exists(climate_api: ClimateApiClient) {
         assert_eq!(
-            climateApi
+            climate_api
                 .get_average_annual_rainfall(1980, 1999, "egy")
                 .unwrap(),
             54.58587712129825
@@ -269,16 +270,18 @@ mod tests {
     }
 
     #[test]
-    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_direct() {
-        test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(ClimateApiClient::new());
+    fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist_direct() {
+        test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
+            ClimateApiClient::new(),
+        );
     }
 
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_playback() {
-        test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
+    fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist_playback() {
+        test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
@@ -289,16 +292,18 @@ mod tests {
         "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist_record() {
-        test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(
+    fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist_record() {
+        test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
         );
     }
 
-    fn test_averageRainfallForGreatBritainFrom1985to1995DoesNotExist(climateApi: ClimateApiClient) {
-        let result = climateApi.get_average_annual_rainfall(1985, 1995, "gbr");
+    fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
+        climate_api: ClimateApiClient,
+    ) {
+        let result = climate_api.get_average_annual_rainfall(1985, 1995, "gbr");
 
         match result {
             Err(err) => match err {
@@ -310,16 +315,18 @@ mod tests {
     }
 
     #[test]
-    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_direct() {
-        test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(ClimateApiClient::new());
+    fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist_direct() {
+        test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
+            ClimateApiClient::new(),
+        );
     }
 
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_playback() {
-        test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
+    fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist_playback() {
+        test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
@@ -330,16 +337,18 @@ mod tests {
         "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
         servirtium_configure
     )]
-    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist_record() {
-        test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(
+    fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist_record() {
+        test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
             ClimateApiClientBuilder::new()
                 .with_domain_name("http://localhost:61417")
                 .build(),
         );
     }
 
-    fn test_averageRainfallForMiddleEarthFrom1980to1999DoesNotExist(climateApi: ClimateApiClient) {
-        let result = climateApi.get_average_annual_rainfall(1980, 1999, "mde");
+    fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
+        climate_api: ClimateApiClient,
+    ) {
+        let result = climate_api.get_average_annual_rainfall(1980, 1999, "mde");
 
         match result {
             Err(err) => match err {
