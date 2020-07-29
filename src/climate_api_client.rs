@@ -119,6 +119,19 @@ impl ClimateApiClient {
         })
     }
 
+    pub fn get_average_annual_rainfall_for_two<T1: AsRef<str>, T2: AsRef<str>>(
+        &self,
+        from_year: u16,
+        to_year: u16,
+        country_iso_first: T1,
+        country_iso_second: T2,
+    ) -> Result<(f64, f64), Error> {
+        let first = self.get_average_annual_rainfall(from_year, to_year, country_iso_first)?;
+        let second = self.get_average_annual_rainfall(from_year, to_year, country_iso_second)?;
+
+        Ok((first, second))
+    }
+
     fn construct_get_average_annual_rainfall_url<T: AsRef<str>>(
         &self,
         from_year: u16,
@@ -357,5 +370,48 @@ mod tests {
             },
             _ => panic!("The function call should return an error"),
         }
+    }
+
+    #[test]
+    fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist_direct() {
+        test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
+            ClimateApiClient::new(),
+        );
+    }
+
+    #[test]
+    #[servirtium_playback_test(
+        "playback_data/average_Rainfall_For_Great_Britain_And_France_From_1980_to_1999_Does_Not_Exist.md",
+        servirtium_configure
+    )]
+    fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist_playback() {
+        test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
+
+    #[servirtium_record_test(
+        "playback_data/average_Rainfall_For_Great_Britain_And_France_From_1980_to_1999_Does_Not_Exist.md",
+        servirtium_configure
+    )]
+    fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist_record() {
+        test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
+            ClimateApiClientBuilder::new()
+                .with_domain_name("http://localhost:61417")
+                .build(),
+        );
+    }
+
+    fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
+        climate_api: ClimateApiClient,
+    ) {
+        let (gbr, fra) = climate_api
+            .get_average_annual_rainfall_for_two(1980, 1999, "gbr", "fra")
+            .unwrap();
+
+        assert_eq!(gbr, 988.8454972331015);
+        assert_eq!(fra, 913.7986955122727);
     }
 }
