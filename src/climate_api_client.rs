@@ -198,11 +198,12 @@ mod tests {
     fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
         climate_api: ClimateApiClient,
     ) {
-        assert_eq!(
+        assert!(
             climate_api
                 .get_average_annual_rainfall(1980, 1999, "gbr")
-                .unwrap(),
-            988.8454972331015
+                .unwrap()
+                - 988.8454972331015
+                < f64::EPSILON
         );
     }
 
@@ -236,11 +237,12 @@ mod tests {
     }
 
     fn test_average_rainfall_for_france_from_1980_to_1999_exists(climate_api: ClimateApiClient) {
-        assert_eq!(
+        assert!(
             climate_api
                 .get_average_annual_rainfall(1980, 1999, "fra")
-                .unwrap(),
-            913.7986955122727
+                .unwrap()
+                - 913.7986955122727
+                < f64::EPSILON
         );
     }
 
@@ -274,11 +276,12 @@ mod tests {
     }
 
     fn test_average_rainfall_for_egypt_from_1980_to_1999_exists(climate_api: ClimateApiClient) {
-        assert_eq!(
+        assert!(
             climate_api
                 .get_average_annual_rainfall(1980, 1999, "egy")
-                .unwrap(),
-            54.58587712129825
+                .unwrap()
+                - 54.58587712129825
+                < f64::EPSILON
         );
     }
 
@@ -411,7 +414,7 @@ mod tests {
             .get_average_annual_rainfall_for_two(1980, 1999, "gbr", "fra")
             .unwrap();
 
-        assert_eq!(gbr, 988.8454972331015);
-        assert_eq!(fra, 913.7986955122727);
+        assert!(gbr - 988.8454972331015 < f64::EPSILON);
+        assert!(fra - 913.7986955122727 < f64::EPSILON);
     }
 }
