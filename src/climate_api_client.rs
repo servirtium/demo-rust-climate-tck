@@ -171,6 +171,7 @@ mod tests {
         test_average_rainfall_for_great_britain_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
+    #[test]
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
         servirtium_configure
@@ -183,6 +184,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_record_test(
         "playback_data/average_Rainfall_For_Great_Britain_From_1980_to_1999_Exists.md",
         servirtium_configure
@@ -212,6 +214,7 @@ mod tests {
         test_average_rainfall_for_france_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
+    #[test]
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
         servirtium_configure
@@ -224,6 +227,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_record_test(
         "playback_data/average_Rainfall_For_France_From_1980_to_1999_Exists.md",
         servirtium_configure
@@ -251,6 +255,7 @@ mod tests {
         test_average_rainfall_for_egypt_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
+    #[test]
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
         servirtium_configure
@@ -263,6 +268,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_record_test(
         "playback_data/average_Rainfall_For_Egypt_From_1980_to_1999_Exists.md",
         servirtium_configure
@@ -292,6 +298,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
         servirtium_configure
@@ -304,6 +311,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_record_test(
         "playback_data/average_Rainfall_For_Great_Britain_From_1985_to_1995_Does_Not_Exist.md",
         servirtium_configure
@@ -337,6 +345,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_playback_test(
         "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
         servirtium_configure
@@ -349,6 +358,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_record_test(
         "playback_data/average_Rainfall_For_Middle_Earth_From_1980_to_1999_Does_Not_Exist.md",
         servirtium_configure
@@ -395,6 +405,7 @@ mod tests {
         );
     }
 
+    #[test]
     #[servirtium_record_test(
         "playback_data/average_Rainfall_For_Great_Britain_And_France_From_1980_to_1999_Does_Not_Exist.md",
         servirtium_configure
