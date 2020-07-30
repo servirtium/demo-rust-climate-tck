@@ -16,22 +16,22 @@ host: localhost:61417
 ### Response headers recorded for playback:
 
 ```
+connection: keep-alive
+x-content-type-options: nosniff
+cache-control: no-cache,no-store
+access-control-allow-headers: X-Requested-With
+x-xss-protection: 1; mode=block
+httponly: true
+access-control-allow-methods: GET
+secure: true
+pragma: no-cache
 transfer-encoding: chunked
 access-control-allow-origin: *
-content-security-policy: default-src 'self'
 x-frame-options: deny
-x-xss-protection: 1; mode=block
-x-content-type-options: nosniff
-set-cookie: TS0137860d=01359ee97686e6933e8aff696b50b18a9f4fc394315e069070075d2329e8f8e4a1c021da45a41f7fc4f955aa4c656cbc8016170106365c29284d081fe0ea86bff9a494636f1ba89fb83beb2090d2884725d7fe6b56cf4c6197f44041f324c1e964e51eff6ecbe20a96a76835f67a99186042c21c511609835c2a1c3f0ae98b2a6c2db96148; Path=/
-access-control-allow-headers: X-Requested-With
-connection: keep-alive
+set-cookie: TS0137860d=01359ee9769378e262a63f879a417eb1b6669ca92af1991fa0b3144df87799df6438339f4f864ecf6cb01263de2dc3541c6c1e432182d3fa564446a29f79f1871fc0557b424f87d5aa39c5cb9c82c929d6b49dadb32e307899081baae2cd9750111b1b89e970c0ae9b9b2eef6f4bbc395938a2aa7d531590bbd52b355c9a900126506792d5; Path=/
+content-security-policy: default-src 'self'
+date: Thu, 30 Jul 2020 14:25:29 GMT
 content-type: application/xml
-pragma: no-cache
-access-control-allow-methods: GET
-cache-control: no-cache,no-store
-secure: true
-httponly: true
-date: Thu, 30 Jul 2020 14:19:28 GMT
 strict-transport-security: max-age=31536000; includeSubDomains
 ```
 
@@ -182,8 +182,8 @@ strict-transport-security: max-age=31536000; includeSubDomains
 ### Request headers recorded for playback:
 
 ```
-accept: */*
 host: localhost:61417
+accept: */*
 ```
 
 ### Request body recorded for playback ():
@@ -195,23 +195,23 @@ host: localhost:61417
 ### Response headers recorded for playback:
 
 ```
-access-control-allow-origin: *
-strict-transport-security: max-age=31536000; includeSubDomains
-access-control-allow-headers: X-Requested-With
-connection: keep-alive
-set-cookie: TS0137860d=01359ee976ba805a43329dd1c31a558239528ec1c447d40805b4fac9d315a896acf2a9d71704a011adb4be53962a3b87f78abddb55ae2c939944bfb76125b705a3a8fbe2294c84004caede30d105a09293e9ea38b1e86c13c78607f01dba6f8ed29915e2d5b698d9ed7228fd4866820b1417ad9d9b310acf27a0d1f4f7eea1f4fd90a8c5211f28e4cd002c680a57e9b4cf71b965e1; Path=/
-x-frame-options: deny
-content-security-policy: default-src 'self'
-x-xss-protection: 1; mode=block
-pragma: no-cache
-transfer-encoding: chunked
-secure: true
-content-type: application/xml
-httponly: true
-cache-control: no-cache,no-store
-date: Thu, 30 Jul 2020 14:19:29 GMT
-access-control-allow-methods: GET
 x-content-type-options: nosniff
+strict-transport-security: max-age=31536000; includeSubDomains
+content-type: application/xml
+pragma: no-cache
+secure: true
+date: Thu, 30 Jul 2020 14:25:30 GMT
+cache-control: no-cache,no-store
+x-xss-protection: 1; mode=block
+access-control-allow-headers: X-Requested-With
+access-control-allow-origin: *
+httponly: true
+set-cookie: TS0137860d=01359ee9765206f110c501ffd35b77c1667e978e16e10ab959f90bb09d0686283a61121a9dd697357f75eb27ad21c465acd5a289ddeba8a341a3ab05e37bf27cbb169caf2997c9b45dcda46945c95ccd04b1561caab9d288a3ad5f3b32421ab079354e99a481633ec9a6649a5cb868569185c24c3246a6ce6244ffff7b48bb2f948ca1d729; Path=/
+transfer-encoding: chunked
+content-security-policy: default-src 'self'
+x-frame-options: deny
+access-control-allow-methods: GET
+connection: keep-alive
 ```
 
 ### Response body recorded for playback (200: application/xml):
