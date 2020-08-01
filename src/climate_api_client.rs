@@ -160,10 +160,16 @@ impl ClimateApiClient {
 #[cfg(test)]
 mod tests {
     use crate::{error::Error, ClimateApiClient, ClimateApiClientBuilder};
-    use servirtium::{servirtium_playback_test, servirtium_record_test, ServirtiumConfiguration};
+    use servirtium::{
+        servirtium_playback_test, servirtium_record_test, Mutations, ServirtiumConfiguration,
+    };
 
     fn servirtium_configure(config: &mut ServirtiumConfiguration) {
         config.set_domain_name("http://climatedataapi.worldbank.org");
+
+        config.add_record_mutations(
+            Mutations::new().remove_response_headers(vec!["set-cookie", "date"]),
+        );
     }
 
     #[test]
