@@ -3,10 +3,8 @@
 ### Request headers recorded for playback:
 
 ```
-Accept: text/html, image/gif, image/jpeg, *; q=.2, */*; q=.2
-User-Agent: Servirtium-Testing
-Connection: keep-alive
-Host: climatedataapi.worldbank.org
+accept: */*
+host: climatedataapi.worldbank.org
 ```
 
 ### Request body recorded for playback ():
@@ -18,17 +16,21 @@ Host: climatedataapi.worldbank.org
 ### Response headers recorded for playback:
 
 ```
-Content-Type: application/json
-Connection: keep-alive
-Set-Cookie: AWSALB=REPLACED-IN-RECORDING; Expires=Thu, 15 Jan 2099 11:11:11 GMT; Path=/
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Headers: X-Requested-With
-Access-Control-Allow-Methods: GET
-Set-Cookie: TS01c35ec3=ONE-MORE-REPLACED-IN-RECORDING; Path=/
-Set-Cookie: climatedataapi.cookie=1234567899999; Path=/
-Set-Cookie: climatedataapi_ext.cookie=9876543211111; Path=/
-Set-Cookie: TS0137860d=ALSO-REPLACED-IN-RECORDING; Path=/
-Transfer-Encoding: chunked
+access-control-allow-headers: X-Requested-With
+access-control-allow-methods: GET
+connection: keep-alive
+content-security-policy: default-src 'self'
+httponly: true
+pragma: no-cache
+secure: true
+x-xss-protection: 1; mode=block
+content-type: application/json
+x-content-type-options: nosniff
+cache-control: no-cache,no-store
+access-control-allow-origin: *
+transfer-encoding: chunked
+x-frame-options: deny
+strict-transport-security: max-age=31536000; includeSubDomains
 ```
 
 ### Response body recorded for playback (200: application/json):

@@ -3,8 +3,8 @@
 ### Request headers recorded for playback:
 
 ```
+host: climatedataapi.worldbank.org
 accept: */*
-host: localhost:61417
 ```
 
 ### Request body recorded for playback ():
@@ -16,23 +16,21 @@ host: localhost:61417
 ### Response headers recorded for playback:
 
 ```
-connection: keep-alive
-x-content-type-options: nosniff
-cache-control: no-cache,no-store
 access-control-allow-headers: X-Requested-With
-x-xss-protection: 1; mode=block
-httponly: true
-access-control-allow-methods: GET
 secure: true
 pragma: no-cache
-transfer-encoding: chunked
-access-control-allow-origin: *
-x-frame-options: deny
-set-cookie: TS0137860d=01359ee9769378e262a63f879a417eb1b6669ca92af1991fa0b3144df87799df6438339f4f864ecf6cb01263de2dc3541c6c1e432182d3fa564446a29f79f1871fc0557b424f87d5aa39c5cb9c82c929d6b49dadb32e307899081baae2cd9750111b1b89e970c0ae9b9b2eef6f4bbc395938a2aa7d531590bbd52b355c9a900126506792d5; Path=/
-content-security-policy: default-src 'self'
-date: Thu, 30 Jul 2020 14:25:29 GMT
 content-type: application/xml
 strict-transport-security: max-age=31536000; includeSubDomains
+access-control-allow-methods: GET
+cache-control: no-cache,no-store
+access-control-allow-origin: *
+httponly: true
+x-xss-protection: 1; mode=block
+transfer-encoding: chunked
+x-content-type-options: nosniff
+x-frame-options: deny
+content-security-policy: default-src 'self'
+connection: keep-alive
 ```
 
 ### Response body recorded for playback (200: application/xml):
@@ -177,13 +175,13 @@ strict-transport-security: max-age=31536000; includeSubDomains
 </list>
 ```
 
-## Interaction 1: GET /climateweb/rest/v1/country/annualavg/pr/1980/1999/fra.xml
+## Interaction 0: GET /climateweb/rest/v1/country/annualavg/pr/1980/1999/fra.xml
 
 ### Request headers recorded for playback:
 
 ```
-host: localhost:61417
 accept: */*
+host: climatedataapi.worldbank.org
 ```
 
 ### Request body recorded for playback ():
@@ -195,22 +193,20 @@ accept: */*
 ### Response headers recorded for playback:
 
 ```
-x-content-type-options: nosniff
-strict-transport-security: max-age=31536000; includeSubDomains
-content-type: application/xml
-pragma: no-cache
-secure: true
-date: Thu, 30 Jul 2020 14:25:30 GMT
-cache-control: no-cache,no-store
-x-xss-protection: 1; mode=block
-access-control-allow-headers: X-Requested-With
-access-control-allow-origin: *
 httponly: true
-set-cookie: TS0137860d=01359ee9765206f110c501ffd35b77c1667e978e16e10ab959f90bb09d0686283a61121a9dd697357f75eb27ad21c465acd5a289ddeba8a341a3ab05e37bf27cbb169caf2997c9b45dcda46945c95ccd04b1561caab9d288a3ad5f3b32421ab079354e99a481633ec9a6649a5cb868569185c24c3246a6ce6244ffff7b48bb2f948ca1d729; Path=/
-transfer-encoding: chunked
-content-security-policy: default-src 'self'
+access-control-allow-headers: X-Requested-With
+strict-transport-security: max-age=31536000; includeSubDomains
 x-frame-options: deny
+access-control-allow-origin: *
+secure: true
+transfer-encoding: chunked
+content-type: application/xml
+x-xss-protection: 1; mode=block
+content-security-policy: default-src 'self'
+cache-control: no-cache,no-store
+x-content-type-options: nosniff
 access-control-allow-methods: GET
+pragma: no-cache
 connection: keep-alive
 ```
 
