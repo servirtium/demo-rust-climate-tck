@@ -147,7 +147,7 @@ impl ClimateApiClient {
             country_iso.as_ref()
         )
     }
-    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -160,7 +160,12 @@ mod tests {
         config.set_domain_name("http://climatedataapi.worldbank.org");
 
         config.add_record_mutations(
-            Mutations::new().remove_response_headers(vec!["set-cookie", "date"]),
+            Mutations::new().response(|builder| builder.remove_headers(vec!["set-cookie", "date"])),
+        );
+
+        config.add_playback_mutations(
+            Mutations::new()
+                .response(|builder| builder.add_header("date", "Sun, 02 Aug 2020 09:53:31 GMT")),
         );
     }
 
