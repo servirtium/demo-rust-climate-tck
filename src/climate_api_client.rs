@@ -158,6 +158,7 @@ mod tests {
 
     fn servirtium_configure(config: &mut ServirtiumConfiguration) {
         config.set_domain_name("http://climatedataapi.worldbank.org");
+        config.set_fail_if_markdown_changed(true);
 
         config.add_record_mutations(
             Mutations::new().response(|builder| builder.remove_headers(vec!["set-cookie", "date"])),
