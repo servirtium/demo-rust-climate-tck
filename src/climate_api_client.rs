@@ -152,22 +152,19 @@ impl ClimateApiClient {
 #[cfg(test)]
 mod tests {
     use crate::{error::Error, ClimateApiClient, ClimateApiClientBuilder};
-    use servirtium::{
-        servirtium_playback_test, servirtium_record_test, Mutations, ServirtiumConfiguration,
-    };
+    use servirtium::{servirtium_playback_test, servirtium_record_test, ServirtiumConfiguration};
 
     fn servirtium_configure(config: &mut ServirtiumConfiguration) {
         config.set_domain_name("http://climatedataapi.worldbank.org");
         config.set_fail_if_markdown_changed(true);
 
-        config.add_record_mutations(
-            Mutations::new().response(|builder| builder.remove_headers(vec!["set-cookie", "date"])),
-        );
+        config.add_record_response_mutations(|builder| {
+            builder.remove_headers(vec!["set-cookie", "date"])
+        });
 
-        config.add_playback_mutations(
-            Mutations::new()
-                .response(|builder| builder.add_header("date", "Sun, 02 Aug 2020 09:53:31 GMT")),
-        );
+        config.add_playback_response_mutations(|builder| {
+            builder.add_header("date", "Sun, 02 Aug 2020 09:53:31 GMT")
+        });
     }
 
     #[test]
