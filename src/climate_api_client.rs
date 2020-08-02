@@ -96,8 +96,6 @@ impl ClimateApiClient {
         to_year: u16,
         country_iso: T,
     ) -> Result<f64, Error> {
-        Self::check_years(from_year, to_year)?;
-
         let url = self.construct_get_average_annual_rainfall_url(from_year, to_year, country_iso);
 
         let response_text = self.http.get(&url).send()?.error_for_status()?.text()?;
@@ -107,7 +105,10 @@ impl ClimateApiClient {
         }
 
         let data: AnnualGcmData = quick_xml::de::from_str(&response_text)?;
-        let data = data.results.unwrap_or_default();
+        let data = match data.results {
+            Some(data) => data,
+            None => return Err(Error::DateRangeNotSupported(from_year, to_year)),
+        };
 
         let (sum, count) = data.into_iter().fold((0.0, 0), |(sum, count), datum| {
             (sum + datum.annual_data.double, count + 1)
@@ -146,16 +147,7 @@ impl ClimateApiClient {
             country_iso.as_ref()
         )
     }
-
-    fn check_years(from_year: u16, to_year: u16) -> Result<(), Error> {
-        if from_year < 1920 || from_year > 2080 || from_year % 20 != 0 || to_year != from_year + 19
-        {
-            Err(Error::DateRangeNotSupported(from_year, to_year))
-        } else {
-            Ok(())
-        }
     }
-}
 
 #[cfg(test)]
 mod tests {
