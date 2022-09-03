@@ -3,7 +3,7 @@ use reqwest::{self};
 type ReqwestClient = reqwest::blocking::Client;
 use crate::data::annual_gcm_data::AnnualGcmData;
 
-const DEFAULT_DOMAIN_NAME: &str = "http://climatedataapi.worldbank.org";
+const DEFAULT_DOMAIN_NAME: &str = "http://worldbank-api-for-servirtium.local.gd:4567";
 
 /// Builder used to build a ClimateApiClient instance
 #[derive(Debug, Clone, Default)]
@@ -155,7 +155,7 @@ mod tests {
     use servirtium::{servirtium_playback_test, servirtium_record_test, ServirtiumConfiguration};
 
     fn servirtium_configure(config: &mut ServirtiumConfiguration) {
-        config.set_domain_name("http://climatedataapi.worldbank.org");
+        config.set_domain_name("http://worldbank-api-for-servirtium.local.gd:4567");
         config.set_fail_if_markdown_changed(true);
 
         config.add_record_response_mutations(|builder| {
@@ -179,7 +179,7 @@ mod tests {
     fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists_playback() {
         test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -191,7 +191,7 @@ mod tests {
     fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists_record() {
         test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -220,7 +220,7 @@ mod tests {
     fn test_average_rainfall_for_france_from_1980_to_1999_exists_playback() {
         test_average_rainfall_for_france_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -232,7 +232,7 @@ mod tests {
     fn test_average_rainfall_for_france_from_1980_to_1999_exists_record() {
         test_average_rainfall_for_france_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -259,7 +259,7 @@ mod tests {
     fn test_average_rainfall_for_egypt_from_1980_to_1999_exists_playback() {
         test_average_rainfall_for_egypt_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -271,7 +271,7 @@ mod tests {
     fn test_average_rainfall_for_egypt_from_1980_to_1999_exists_record() {
         test_average_rainfall_for_egypt_from_1980_to_1999_exists(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -300,7 +300,7 @@ mod tests {
     fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist_playback() {
         test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -312,7 +312,7 @@ mod tests {
     fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist_record() {
         test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -345,7 +345,7 @@ mod tests {
     fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist_playback() {
         test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -357,7 +357,7 @@ mod tests {
     fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist_record() {
         test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -390,7 +390,7 @@ mod tests {
     fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist_playback() {
         test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }
@@ -402,7 +402,7 @@ mod tests {
     fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist_record() {
         test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
             ClimateApiClientBuilder::new()
-                .with_domain_name("http://localhost:61417")
+                .with_domain_name("http://servirtium.local.gd:61417")
                 .build(),
         );
     }

@@ -3,8 +3,8 @@
 ### Request headers recorded for playback:
 
 ```
-host: climatedataapi.worldbank.org
 accept: */*
+host: climatedataapi.worldbank.org
 ```
 
 ### Request body recorded for playback ():
@@ -17,20 +17,20 @@ accept: */*
 
 ```
 access-control-allow-headers: X-Requested-With
-secure: true
-pragma: no-cache
-content-type: application/xml
-strict-transport-security: max-age=31536000; includeSubDomains
 access-control-allow-methods: GET
-cache-control: no-cache,no-store
 access-control-allow-origin: *
+cache-control: no-cache,no-store
+connection: keep-alive
+content-security-policy: default-src 'self'
+content-type: application/xml
 httponly: true
-x-xss-protection: 1; mode=block
+pragma: no-cache
+secure: true
+strict-transport-security: max-age=31536000; includeSubDomains
 transfer-encoding: chunked
 x-content-type-options: nosniff
 x-frame-options: deny
-content-security-policy: default-src 'self'
-connection: keep-alive
+x-xss-protection: 1; mode=block
 ```
 
 ### Response body recorded for playback (200: application/xml):
@@ -193,21 +193,21 @@ host: climatedataapi.worldbank.org
 ### Response headers recorded for playback:
 
 ```
-httponly: true
 access-control-allow-headers: X-Requested-With
-strict-transport-security: max-age=31536000; includeSubDomains
-x-frame-options: deny
-access-control-allow-origin: *
-secure: true
-transfer-encoding: chunked
-content-type: application/xml
-x-xss-protection: 1; mode=block
-content-security-policy: default-src 'self'
-cache-control: no-cache,no-store
-x-content-type-options: nosniff
 access-control-allow-methods: GET
-pragma: no-cache
+access-control-allow-origin: *
+cache-control: no-cache,no-store
 connection: keep-alive
+content-security-policy: default-src 'self'
+content-type: application/xml
+httponly: true
+pragma: no-cache
+secure: true
+strict-transport-security: max-age=31536000; includeSubDomains
+transfer-encoding: chunked
+x-content-type-options: nosniff
+x-frame-options: deny
+x-xss-protection: 1; mode=block
 ```
 
 ### Response body recorded for playback (200: application/xml):

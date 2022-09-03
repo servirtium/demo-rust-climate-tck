@@ -16,21 +16,21 @@ host: climatedataapi.worldbank.org
 ### Response headers recorded for playback:
 
 ```
-httponly: true
-content-security-policy: default-src 'self'
-strict-transport-security: max-age=31536000; includeSubDomains
-access-control-allow-origin: *
-connection: keep-alive
-secure: true
-x-frame-options: deny
 access-control-allow-headers: X-Requested-With
-x-xss-protection: 1; mode=block
+access-control-allow-methods: GET
+access-control-allow-origin: *
+cache-control: no-cache,no-store
+connection: keep-alive
+content-security-policy: default-src 'self'
+content-type: application/xml
+httponly: true
+pragma: no-cache
+secure: true
+strict-transport-security: max-age=31536000; includeSubDomains
 transfer-encoding: chunked
 x-content-type-options: nosniff
-access-control-allow-methods: GET
-content-type: application/xml
-pragma: no-cache
-cache-control: no-cache,no-store
+x-frame-options: deny
+x-xss-protection: 1; mode=block
 ```
 
 ### Response body recorded for playback (200: application/xml):
