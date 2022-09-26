@@ -3,7 +3,7 @@ use reqwest::{self};
 type ReqwestClient = reqwest::blocking::Client;
 use crate::data::annual_gcm_data::AnnualGcmData;
 
-const DEFAULT_DOMAIN_NAME: &str = "http://worldbank-api-for-servirtium.local.gd:4567";
+const DEFAULT_DOMAIN_NAME: &str = "https://servirtium.github.io/worldbank-climate-recordings";
 
 /// Builder used to build a ClimateApiClient instance
 #[derive(Debug, Clone, Default)]
