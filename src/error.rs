@@ -4,28 +4,28 @@ use std::{fmt::Display, io};
 pub enum Error {
     DateRangeNotSupported(u16, u16),
     NotRecognizedByClimateWeb,
-    DeserializationError(quick_xml::DeError),
-    ReqwestError(reqwest::Error),
-    IoError(io::Error),
+    Deserialization(quick_xml::DeError),
+    Reqwest(reqwest::Error),
+    Io(io::Error),
 }
 
 impl std::error::Error for Error {}
 
 impl From<reqwest::Error> for Error {
     fn from(e: reqwest::Error) -> Self {
-        Error::ReqwestError(e)
+        Error::Reqwest(e)
     }
 }
 
 impl From<quick_xml::DeError> for Error {
     fn from(e: quick_xml::DeError) -> Self {
-        Error::DeserializationError(e)
+        Error::Deserialization(e)
     }
 }
 
 impl From<io::Error> for Error {
     fn from(e: io::Error) -> Self {
-        Error::IoError(e)
+        Error::Io(e)
     }
 }
 
@@ -36,9 +36,9 @@ impl Display for Error {
                 write!(f, "Date range {}-{} not supported", from_date, to_date)
             }
             Error::NotRecognizedByClimateWeb => write!(f, "Not recognized by ClimateWeb"),
-            Error::ReqwestError(e) => write!(f, "{}", e.to_string()),
-            Error::DeserializationError(e) => write!(f, "{}", e.to_string()),
-            Error::IoError(e) => write!(f, "{}", e.to_string()),
+            Error::Reqwest(e) => write!(f, "{}", e),
+            Error::Deserialization(e) => write!(f, "{}", e),
+            Error::Io(e) => write!(f, "{}", e),
         }
     }
 }

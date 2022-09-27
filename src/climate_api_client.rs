@@ -151,11 +151,11 @@ impl ClimateApiClient {
 
 #[cfg(test)]
 mod tests {
-    use crate::{error::Error, ClimateApiClient, ClimateApiClientBuilder};
+    use crate::{error::Error, ClimateApiClient};
     use servirtium::{servirtium_playback_test, servirtium_record_test, ServirtiumConfiguration};
 
     fn servirtium_configure(config: &mut ServirtiumConfiguration) {
-        config.set_domain_name("http://worldbank-api-for-servirtium.local.gd:4567");
+        config.set_domain_name("https://servirtium.github.io/worldbank-climate-recordings");
         config.set_fail_if_markdown_changed(true);
 
         config.add_record_response_mutations(|builder| {
@@ -178,11 +178,7 @@ mod tests {
         servirtium_configure
     )]
     fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists_playback() {
-        test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
-        );
+        test_average_rainfall_for_great_britain_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     #[test]
@@ -191,21 +187,18 @@ mod tests {
         servirtium_configure
     )]
     fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists_record() {
-        test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
-        );
+        test_average_rainfall_for_great_britain_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     fn test_average_rainfall_for_great_britain_from_1980_to_1999_exists(
         climate_api: ClimateApiClient,
     ) {
         assert!(
-            climate_api
+            (climate_api
                 .get_average_annual_rainfall(1980, 1999, "gbr")
                 .unwrap()
-                - 988.8454972331015
+                - 988.8454972331015)
+                .abs()
                 < f64::EPSILON
         );
     }
@@ -221,11 +214,7 @@ mod tests {
         servirtium_configure
     )]
     fn test_average_rainfall_for_france_from_1980_to_1999_exists_playback() {
-        test_average_rainfall_for_france_from_1980_to_1999_exists(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
-        );
+        test_average_rainfall_for_france_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     #[test]
@@ -234,19 +223,16 @@ mod tests {
         servirtium_configure
     )]
     fn test_average_rainfall_for_france_from_1980_to_1999_exists_record() {
-        test_average_rainfall_for_france_from_1980_to_1999_exists(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
-        );
+        test_average_rainfall_for_france_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     fn test_average_rainfall_for_france_from_1980_to_1999_exists(climate_api: ClimateApiClient) {
         assert!(
-            climate_api
+            (climate_api
                 .get_average_annual_rainfall(1980, 1999, "fra")
                 .unwrap()
-                - 913.7986955122727
+                - 913.7986955122727)
+                .abs()
                 < f64::EPSILON
         );
     }
@@ -262,11 +248,7 @@ mod tests {
         servirtium_configure
     )]
     fn test_average_rainfall_for_egypt_from_1980_to_1999_exists_playback() {
-        test_average_rainfall_for_egypt_from_1980_to_1999_exists(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
-        );
+        test_average_rainfall_for_egypt_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     #[test]
@@ -275,19 +257,16 @@ mod tests {
         servirtium_configure
     )]
     fn test_average_rainfall_for_egypt_from_1980_to_1999_exists_record() {
-        test_average_rainfall_for_egypt_from_1980_to_1999_exists(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
-        );
+        test_average_rainfall_for_egypt_from_1980_to_1999_exists(ClimateApiClient::new());
     }
 
     fn test_average_rainfall_for_egypt_from_1980_to_1999_exists(climate_api: ClimateApiClient) {
         assert!(
-            climate_api
+            (climate_api
                 .get_average_annual_rainfall(1980, 1999, "egy")
                 .unwrap()
-                - 54.58587712129825
+                - 54.58587712129825)
+                .abs()
                 < f64::EPSILON
         );
     }
@@ -306,9 +285,7 @@ mod tests {
     )]
     fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist_playback() {
         test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
+            ClimateApiClient::new(),
         );
     }
 
@@ -319,9 +296,7 @@ mod tests {
     )]
     fn test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist_record() {
         test_average_rainfall_for_great_britain_from_1985_to_1995_does_not_exist(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
+            ClimateApiClient::new(),
         );
     }
 
@@ -333,7 +308,7 @@ mod tests {
         match result {
             Err(err) => match err {
                 Error::DateRangeNotSupported(1985, 1995) => (),
-                _ => panic!("The function returned a wrong error: {}", err.to_string()),
+                _ => panic!("The function returned a wrong error: {}", err),
             },
             _ => panic!("The function call should return an error"),
         }
@@ -353,9 +328,7 @@ mod tests {
     )]
     fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist_playback() {
         test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
+            ClimateApiClient::new(),
         );
     }
 
@@ -366,9 +339,7 @@ mod tests {
     )]
     fn test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist_record() {
         test_average_rainfall_for_middle_earth_from_1980_to_1999_does_not_exist(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
+            ClimateApiClient::new(),
         );
     }
 
@@ -380,7 +351,7 @@ mod tests {
         match result {
             Err(err) => match err {
                 Error::NotRecognizedByClimateWeb => (),
-                _ => panic!("The function returned a wrong error: {}", err.to_string()),
+                _ => panic!("The function returned a wrong error: {}", err),
             },
             _ => panic!("The function call should return an error"),
         }
@@ -400,9 +371,7 @@ mod tests {
     )]
     fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist_playback() {
         test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
+            ClimateApiClient::new(),
         );
     }
 
@@ -413,9 +382,7 @@ mod tests {
     )]
     fn test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist_record() {
         test_average_rainfall_for_great_britain_and_france_from_1980_to_1999_exist(
-            ClimateApiClientBuilder::new()
-                .with_domain_name("http://servirtium.local.gd:61417")
-                .build(),
+            ClimateApiClient::new(),
         );
     }
 
@@ -426,7 +393,7 @@ mod tests {
             .get_average_annual_rainfall_for_two(1980, 1999, "gbr", "fra")
             .unwrap();
 
-        assert!(gbr - 988.8454972331015 < f64::EPSILON);
-        assert!(fra - 913.7986955122727 < f64::EPSILON);
+        assert!((gbr - 988.8454972331015).abs() < f64::EPSILON);
+        assert!((fra - 913.7986955122727).abs() < f64::EPSILON);
     }
 }

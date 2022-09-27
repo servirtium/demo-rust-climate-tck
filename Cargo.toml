@@ -9,11 +9,11 @@ license = "MIT"
 
 [dependencies]
 servirtium = { git = "https://github.com/servirtium/servirtium-rust" }
-quick-xml = {version = "^0.18", features = ["serialize"]}
-reqwest = { version = "^0.10", features = ["blocking"] }
+quick-xml = { version = "0.25.0", features = ["serialize"] }
+reqwest = { version = "0.11.12", features = ["blocking"] }
 serde = { version = "1.0", features = ["derive"] }
 regex = "1"
 lazy_static = "1.4.0"
-hyper = "0.13.7"
+hyper = "0.14.20"
 futures = "0.3.5"
-tokio = "0.2.22"
+tokio = { version = "1.21.1", features = ["full"] }
